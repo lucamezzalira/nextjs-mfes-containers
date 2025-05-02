@@ -1,0 +1,24 @@
+{
+  "name": "t-shirt-shop",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "home",
+    "catalogue",
+    "account"
+  ],
+  "scripts": {
+    "dev": "docker-compose up",
+    "build": "docker-compose build",
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "clean": "docker-compose down -v",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  }
+} 

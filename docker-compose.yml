@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  home:
+    build:
+      context: .
+      dockerfile: home/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_HOME_URL=http://localhost:3000
+      - NEXT_PUBLIC_CATALOG_URL=http://localhost:3001
+      - NEXT_PUBLIC_ACCOUNT_URL=http://localhost:3002
+      - NEXT_PUBLIC_HOME_ASSET_PREFIX=
+    volumes:
+      - ./shared:/app/shared
+
+  catalog:
+    build:
+      context: .
+      dockerfile: catalog/Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_HOME_URL=http://localhost:3000
+      - NEXT_PUBLIC_CATALOG_URL=http://localhost:3001
+      - NEXT_PUBLIC_ACCOUNT_URL=http://localhost:3002
+      - NEXT_PUBLIC_CATALOG_BASE_PATH=/catalog
+      - NEXT_PUBLIC_CATALOG_ASSET_PREFIX=
+    volumes:
+      - ./shared:/app/shared
+
+  account:
+    build:
+      context: .
+      dockerfile: account/Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_HOME_URL=http://localhost:3000
+      - NEXT_PUBLIC_CATALOG_URL=http://localhost:3001
+      - NEXT_PUBLIC_ACCOUNT_URL=http://localhost:3002
+      - NEXT_PUBLIC_ACCOUNT_BASE_PATH=/account
+      - NEXT_PUBLIC_ACCOUNT_ASSET_PREFIX=
+    volumes:
+      - ./shared:/app/shared 
