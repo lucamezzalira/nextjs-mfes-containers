@@ -47,6 +47,9 @@ jobs:
       - name: Run ts-arch tests
         run: npm run test:architecture
 
+      - name: Restore package-lock.json
+        run: git restore package-lock.json
+
       - name: Commit and push if changed
         run: |
           git config --global user.name 'GitHub Action'
