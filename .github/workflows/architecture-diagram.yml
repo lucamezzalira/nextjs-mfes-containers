@@ -8,6 +8,7 @@ on:
       - '**/__tests__/architecture/**'
       - '**/src/**'
       - 'README.md'
+      - '.github/workflows/architecture-diagram.yml'
 
 permissions:
   contents: write
