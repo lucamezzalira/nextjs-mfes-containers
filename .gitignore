@@ -1,5 +1,5 @@
 # dependencies
-node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -48,4 +48,6 @@ next-env.d.ts
 
 # Docker
 .docker/
-docker-compose.override.yml 
+docker-compose.override.yml
+
+dist/ 
