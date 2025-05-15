@@ -4,16 +4,7 @@ This project demonstrates a micro-frontend architecture using Next.js 15's multi
 
 ## Architecture Constraints
 
-## Architecture Overview
-
-The application consists of three main zones:
-
-- **Home** (default zone): Landing page and featured products
-- **Catalog**: Product listing and details
-- **Account**: User authentication and profile management
-
-Each zone is an independent Next.js application that:
-- Can be developed and deployed independently
-- Has its own routing and configuration
-- Shares common components through a shared library
-- Maintains consistent styling using Tailwind CSS
+- zones should not depend on each other
+- components folder should only contain header and footer
+- shared components should not depend on zones
+- zones should be free of cycles
