@@ -8,42 +8,22 @@ This project demonstrates a micro-frontend architecture using Next.js 15's multi
 graph TD
     subgraph "Shared Components"
         SC[Shared Components]
-        H[Header]
-        F[Footer]
-        SC --> H
-        SC --> F
     end
 
     subgraph "Zones"
-        Home[Home Zone]
-        Catalog[Catalog Zone]
-        Account[Account Zone]
     end
 
-    %% Dependencies between zones (should not exist)
-    Home -.x. Catalog
-    Home -.x. Account
-    Catalog -.x. Account
 
-    %% Dependencies from zones to shared (allowed)
-    Home --> SC
-    Catalog --> SC
-    Account --> SC
 
-    %% Dependencies from shared to zones (not allowed)
-    SC -.x. Home
-    SC -.x. Catalog
-    SC -.x. Account
 
-    %% Cycles check
-    Home -.x. Home
-    Catalog -.x. Catalog
-    Account -.x. Account
 
     style SC fill:#f9f,stroke:#333,stroke-width:2px
-    style Home fill:#bbf,stroke:#333,stroke-width:2px
-    style Catalog fill:#bbf,stroke:#333,stroke-width:2px
-    style Account fill:#bbf,stroke:#333,stroke-width:2px
+
+    subgraph Legend
+        L1[Allowed] --> L2[Forbidden]
+        style L1 fill:#9f9,stroke:#333,stroke-width:2px
+        style L2 fill:#f99,stroke:#333,stroke-width:2px
+    end
 ```
 
 ## Architecture Overview
@@ -81,7 +61,6 @@ NEXT_PUBLIC_HOME_URL=http://localhost:3000
 NEXT_PUBLIC_CATALOG_URL=http://localhost:3001
 NEXT_PUBLIC_ACCOUNT_URL=http://localhost:3002
 NEXT_PUBLIC_ACCOUNT_BASE_PATH=/account
-```
 
 For production, these would be replaced with the appropriate URLs:
 
@@ -90,7 +69,6 @@ For production, these would be replaced with the appropriate URLs:
 NEXT_PUBLIC_HOME_URL=https://shop.example.com
 NEXT_PUBLIC_CATALOG_URL=https://catalog.shop.example.com
 NEXT_PUBLIC_ACCOUNT_URL=https://account.shop.example.com
-```
 
 ## Shared Library
 
@@ -128,7 +106,6 @@ The `@t-shirt-shop/shared` package contains:
   },
   transpilePackages: ['@t-shirt-shop/shared'],
 }
-```
 
 ### Catalog App
 ```javascript
@@ -147,7 +124,6 @@ The `@t-shirt-shop/shared` package contains:
   },
   transpilePackages: ['@t-shirt-shop/shared'],
 }
-```
 
 ### Account App
 ```javascript
@@ -157,7 +133,6 @@ The `@t-shirt-shop/shared` package contains:
   basePath: process.env.NEXT_PUBLIC_ACCOUNT_BASE_PATH,
   transpilePackages: ['@t-shirt-shop/shared'],
 }
-```
 
 ## Cross-Zone Navigation
 
@@ -168,7 +143,6 @@ Navigation between zones is handled through environment-aware URLs:
 <a href={process.env.NEXT_PUBLIC_HOME_URL}>Home</a>
 <a href={`${process.env.NEXT_PUBLIC_CATALOG_URL}${process.env.NEXT_PUBLIC_CATALOG_BASE_PATH}`}>Catalog</a>
 <a href={`${process.env.NEXT_PUBLIC_ACCOUNT_URL}${process.env.NEXT_PUBLIC_ACCOUNT_BASE_PATH}`}>Account</a>
-```
 
 ## Route Structure
 
@@ -191,7 +165,6 @@ Navigation between zones is handled through environment-aware URLs:
 ```bash
 # Copy example env files
 cp .env.example .env
-```
 
 2. Install dependencies in each zone and the shared library:
 ```bash
@@ -203,7 +176,6 @@ npm run build
 # In each zone (home, catalog, account)
 cd ../[zone-name]
 npm install
-```
 
 3. Start the development servers:
 ```bash
@@ -211,7 +183,6 @@ npm install
 cd home && npm run dev
 cd catalog && npm run dev
 cd account && npm run dev
-```
 
 ## Key Technologies
 
@@ -242,7 +213,6 @@ Each zone maintains its own dependencies but shares common versions:
     "autoprefixer": "^10"
   }
 }
-```
 
 ## Production Considerations
 
@@ -254,7 +224,6 @@ Each zone maintains its own dependencies but shares common versions:
 2. **Asset Prefix**: Configurable through environment variables:
 ```javascript
 assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX
-```
 
 3. **Standalone Output**: All zones use `output: 'standalone'` for optimal deployment.
 
@@ -293,4 +262,3 @@ services:
       - NEXT_PUBLIC_CATALOG_URL=${NEXT_PUBLIC_CATALOG_URL}
       - NEXT_PUBLIC_ACCOUNT_URL=${NEXT_PUBLIC_ACCOUNT_URL}
       - NEXT_PUBLIC_ACCOUNT_BASE_PATH=${NEXT_PUBLIC_ACCOUNT_BASE_PATH}
-```
