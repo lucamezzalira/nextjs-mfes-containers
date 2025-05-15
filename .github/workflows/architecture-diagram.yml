@@ -1,0 +1,95 @@
+name: Update Architecture Diagram
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/__tests__/architecture/**'
+      - '**/src/**'
+      - 'README.md'
+
+jobs:
+  update-diagram:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run architecture tests and update diagram
+        run: |
+          # Create a temporary file for the new diagram
+          cat > temp-diagram.md << 'EOL'
+          ## Architecture Diagram
+          
+          ```mermaid
+          graph TD
+              subgraph "Shared Components"
+                  SC[Shared Components]
+                  H[Header]
+                  F[Footer]
+                  SC --> H
+                  SC --> F
+              end
+          
+              subgraph "Zones"
+                  Home[Home Zone]
+                  Catalog[Catalog Zone]
+                  Account[Account Zone]
+              end
+          
+              %% Dependencies between zones (should not exist)
+              Home -.x. Catalog
+              Home -.x. Account
+              Catalog -.x. Account
+          
+              %% Dependencies from zones to shared (allowed)
+              Home --> SC
+              Catalog --> SC
+              Account --> SC
+          
+              %% Dependencies from shared to zones (not allowed)
+              SC -.x. Home
+              SC -.x. Catalog
+              SC -.x. Account
+          
+              %% Cycles check
+              Home -.x. Home
+              Catalog -.x. Catalog
+              Account -.x. Account
+          
+              style SC fill:#f9f,stroke:#333,stroke-width:2px
+              style Home fill:#bbf,stroke:#333,stroke-width:2px
+              style Catalog fill:#bbf,stroke:#333,stroke-width:2px
+              style Account fill:#bbf,stroke:#333,stroke-width:2px
+          ```
+          EOL
+          
+          # Update README.md with the new diagram
+          awk '
+          BEGIN { p=1 }
+          /^## Architecture Diagram/ { p=0; system("cat temp-diagram.md"); next }
+          /^```mermaid/ { p=0; next }
+          /^```$/ { p=1; next }
+          p { print }
+          ' README.md > README.md.new
+          
+          mv README.md.new README.md
+          rm temp-diagram.md
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update architecture diagram" && git push) 

@@ -2,6 +2,50 @@
 
 This project demonstrates a micro-frontend architecture using Next.js 15's multi-zone feature. The application is split into three independent applications (zones) that work together to create a cohesive e-commerce experience.
 
+## Architecture Diagram
+
+```mermaid
+graph TD
+    subgraph "Shared Components"
+        SC[Shared Components]
+        H[Header]
+        F[Footer]
+        SC --> H
+        SC --> F
+    end
+
+    subgraph "Zones"
+        Home[Home Zone]
+        Catalog[Catalog Zone]
+        Account[Account Zone]
+    end
+
+    %% Dependencies between zones (should not exist)
+    Home -.x. Catalog
+    Home -.x. Account
+    Catalog -.x. Account
+
+    %% Dependencies from zones to shared (allowed)
+    Home --> SC
+    Catalog --> SC
+    Account --> SC
+
+    %% Dependencies from shared to zones (not allowed)
+    SC -.x. Home
+    SC -.x. Catalog
+    SC -.x. Account
+
+    %% Cycles check
+    Home -.x. Home
+    Catalog -.x. Catalog
+    Account -.x. Account
+
+    style SC fill:#f9f,stroke:#333,stroke-width:2px
+    style Home fill:#bbf,stroke:#333,stroke-width:2px
+    style Catalog fill:#bbf,stroke:#333,stroke-width:2px
+    style Account fill:#bbf,stroke:#333,stroke-width:2px
+```
+
 ## Architecture Overview
 
 The application consists of three main zones:

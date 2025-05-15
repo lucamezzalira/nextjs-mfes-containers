@@ -14,11 +14,15 @@
     "stop": "docker-compose down",
     "clean": "docker-compose down -v",
     "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "test:architecture": "jest __tests__/architecture"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "eslint": "^8.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.3.3",
+    "tsarch": "^5.4.1",
+    "typescript": "^5.0.0"
   }
-} 
+}
