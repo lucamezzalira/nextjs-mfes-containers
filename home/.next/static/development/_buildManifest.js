@@ -1,1 +1,0 @@
-self.__BUILD_MANIFEST = (function(a){return {__rewrites:{afterFiles:[],beforeFiles:[],fallback:[{has:a,source:"\u002Fcatalog\u002F:path*",destination:a},{has:a,source:"\u002Faccount\u002F:path*",destination:a}]},__routerFilterStatic:a,__routerFilterDynamic:a,sortedPages:["\u002F_app"]}}(void 0));self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()
