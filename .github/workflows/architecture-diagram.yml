@@ -43,6 +43,9 @@ jobs:
           mv README.md.new README.md
           rm temp-diagram.md
 
+      - name: Run ts-arch tests
+        run: npm run test:architecture
+
       - name: Commit and push if changed
         run: |
           git config --global user.name 'GitHub Action'

@@ -102,7 +102,6 @@ function generateDiagram(rules) {
       const zone1Name = zone1.charAt(0).toUpperCase() + zone1.slice(1);
       const zone2Name = zone2.charAt(0).toUpperCase() + zone2.slice(1);
       diagram += `    ${zone1Name} -.-> ${zone2Name}\n`;
-      diagram += `    ${zone2Name} -.-> ${zone1Name}\n`;
     });
   });
   diagram += '\n';
