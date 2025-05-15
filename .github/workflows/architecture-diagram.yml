@@ -26,54 +26,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run architecture tests and update diagram
+      - name: Run architecture tests and generate diagram
         run: |
-          # Create a temporary file for the new diagram
-          cat > temp-diagram.md << 'EOL'
-          ## Architecture Diagram
-          
-          ```mermaid
-          graph TD
-              subgraph "Shared Components"
-                  SC[Shared Components]
-                  H[Header]
-                  F[Footer]
-                  SC --> H
-                  SC --> F
-              end
-          
-              subgraph "Zones"
-                  Home[Home Zone]
-                  Catalog[Catalog Zone]
-                  Account[Account Zone]
-              end
-          
-              %% Dependencies between zones (should not exist)
-              Home -.x. Catalog
-              Home -.x. Account
-              Catalog -.x. Account
-          
-              %% Dependencies from zones to shared (allowed)
-              Home --> SC
-              Catalog --> SC
-              Account --> SC
-          
-              %% Dependencies from shared to zones (not allowed)
-              SC -.x. Home
-              SC -.x. Catalog
-              SC -.x. Account
-          
-              %% Cycles check
-              Home -.x. Home
-              Catalog -.x. Catalog
-              Account -.x. Account
-          
-              style SC fill:#f9f,stroke:#333,stroke-width:2px
-              style Home fill:#bbf,stroke:#333,stroke-width:2px
-              style Catalog fill:#bbf,stroke:#333,stroke-width:2px
-              style Account fill:#bbf,stroke:#333,stroke-width:2px
-          ```
-          EOL
+          # Run the diagram generation script
+          node scripts/generate-architecture-diagram.js
           
           # Update README.md with the new diagram
           awk '
