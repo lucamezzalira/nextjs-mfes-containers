@@ -1,68 +1,48 @@
 version: 2
 updates:
-  # Root package.json
+  # Enable version updates for npm
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "npm"
-    commit-message:
-      prefix: "npm"
-      include: "scope"
+      interval: "weekly"
+    open-pull-requests-limit: 0
     ignore:
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
 
-  # Home zone
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
+
+  # Enable version updates for npm in home zone
   - package-ecosystem: "npm"
     directory: "/home"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "npm"
-      - "home"
-    commit-message:
-      prefix: "npm"
-      include: "scope"
+      interval: "weekly"
+    open-pull-requests-limit: 0
     ignore:
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
 
-  # Catalog zone
+  # Enable version updates for npm in catalog zone
   - package-ecosystem: "npm"
     directory: "/catalog"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "npm"
-      - "catalog"
-    commit-message:
-      prefix: "npm"
-      include: "scope"
+      interval: "weekly"
+    open-pull-requests-limit: 0
     ignore:
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
 
-  # Account zone
+  # Enable version updates for npm in account zone
   - package-ecosystem: "npm"
     directory: "/account"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "npm"
-      - "account"
-    commit-message:
-      prefix: "npm"
-      include: "scope"
+      interval: "weekly"
+    open-pull-requests-limit: 0
     ignore:
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
