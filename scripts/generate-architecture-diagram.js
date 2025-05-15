@@ -101,7 +101,8 @@ function generateDiagram(rules) {
     zoneArray.slice(i + 1).forEach(zone2 => {
       const zone1Name = zone1.charAt(0).toUpperCase() + zone1.slice(1);
       const zone2Name = zone2.charAt(0).toUpperCase() + zone2.slice(1);
-      diagram += `    ${zone1Name} -.x. ${zone2Name}\n`;
+      diagram += `    ${zone1Name} -.-> ${zone2Name}\n`;
+      diagram += `    ${zone2Name} -.-> ${zone1Name}\n`;
     });
   });
   diagram += '\n';
@@ -116,23 +117,30 @@ function generateDiagram(rules) {
   // Add dependencies from shared to zones (not allowed)
   rules.zones.forEach(zone => {
     const zoneName = zone.charAt(0).toUpperCase() + zone.slice(1);
-    diagram += `    SC -.x. ${zoneName}\n`;
+    diagram += `    SC -.-> ${zoneName}\n`;
   });
   diagram += '\n';
 
   // Add cycles check
   rules.cycles.forEach(zone => {
     const zoneName = zone.charAt(0).toUpperCase() + zone.slice(1);
-    diagram += `    ${zoneName} -.x. ${zoneName}\n`;
+    diagram += `    ${zoneName} -.-> ${zoneName}\n`;
   });
   diagram += '\n';
 
-  // Add styles
+  // Add styles and legend
   diagram += `    style SC fill:#f9f,stroke:#333,stroke-width:2px\n`;
   rules.zones.forEach(zone => {
     const zoneName = zone.charAt(0).toUpperCase() + zone.slice(1);
     diagram += `    style ${zoneName} fill:#bbf,stroke:#333,stroke-width:2px\n`;
   });
+
+  // Add legend
+  diagram += `\n    subgraph Legend\n`;
+  diagram += `        L1[Allowed] --> L2[Forbidden]\n`;
+  diagram += `        style L1 fill:#9f9,stroke:#333,stroke-width:2px\n`;
+  diagram += `        style L2 fill:#f99,stroke:#333,stroke-width:2px\n`;
+  diagram += `    end\n`;
 
   diagram += '```\n';
   return diagram;
