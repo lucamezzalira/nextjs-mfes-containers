@@ -1,4 +1,4 @@
-name: Update Architecture Diagram
+name: Update Architecture Constraints
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 jobs:
-  update-diagram:
+  update-architecture-constraints:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,22 +31,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run architecture tests and generate diagram
+      - name: Generate architecture constraints section
+        run: node scripts/generate-architecture-diagram.js
+
+      - name: Update README.md with architecture constraints
         run: |
-          # Run the diagram generation script
-          node scripts/generate-architecture-diagram.js
-          
-          # Update README.md with the new diagram
           awk '
           BEGIN { p=1 }
-          /^## Architecture Diagram/ { p=0; system("cat temp-diagram.md"); next }
-          /^```mermaid/ { p=0; next }
-          /^```$/ { p=1; next }
+          /^## Architecture Constraints/ { p=0; system("cat temp-architecture-rules.md"); next }
           p { print }
           ' README.md > README.md.new
-          
           mv README.md.new README.md
-          rm temp-diagram.md
+          rm temp-architecture-rules.md
 
       - name: Run ts-arch tests
         run: npm run test:architecture
@@ -56,4 +52,4 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add README.md
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update architecture diagram" && git push) 
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update architecture constraints" && git push) 
