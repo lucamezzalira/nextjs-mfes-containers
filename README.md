@@ -17,3 +17,8 @@ Each zone is an independent Next.js application that:
 - Maintains consistent styling using Tailwind CSS
 
 ## Architecture Constraints
+
+- zones should not depend on each other
+- components folder should only contain header and footer
+- shared components should not depend on zones
+- zones should be free of cycles
