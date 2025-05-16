@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        zone: [home, catalog, account]
+        zone: [home, catalog, account, shared]
     env:
       # Home zone environment variables
       NEXT_PUBLIC_HOME_ASSET_PREFIX: /home
@@ -41,12 +41,15 @@ jobs:
         run: npm install
 
       - name: Build shared package
+        if: matrix.zone != 'shared'
         run: |
           cd shared
           npm run build
 
       - name: Build ${{ matrix.zone }}
-        run: cd ${{ matrix.zone }} && npm run build
+        run: |
+          cd ${{ matrix.zone }}
+          if [ -f package.json ] && grep -q '"build"' package.json; then npm run build; fi
 
       - name: Run architecture tests for ${{ matrix.zone }}
         id: arch-test
@@ -61,7 +64,7 @@ jobs:
         continue-on-error: true
         run: |
           cd ${{ matrix.zone }}
-          npm run size
+          if [ -f package.json ] && grep -q '"size"' package.json; then npm run size; else exit 0; fi
           echo "size_status=$?" >> $GITHUB_ENV
 
       - name: Create test result file
@@ -97,21 +100,17 @@ jobs:
           echo "" >> temp-test-status.md
           echo "| Zone | Architecture Tests | Size Check |" >> temp-test-status.md
           echo "|------|-------------------|------------|" >> temp-test-status.md
-          
-          for zone in home catalog account; do
+          for zone in home catalog account shared; do
             arch_status=$(grep "$zone:arch:" test-results/test-results-$zone/test-results.txt | cut -d':' -f3)
             size_status=$(grep "$zone:size:" test-results/test-results-$zone/test-results.txt | cut -d':' -f3)
-            
             arch_emoji="✅"
             if [ "$arch_status" != "success" ]; then
               arch_emoji="❌"
             fi
-            
             size_emoji="✅"
             if [ "$size_status" != "success" ]; then
               size_emoji="❌"
             fi
-            
             echo "| $zone | $arch_emoji | $size_emoji |" >> temp-test-status.md
           done
 

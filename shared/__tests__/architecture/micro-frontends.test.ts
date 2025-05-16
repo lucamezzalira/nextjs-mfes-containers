@@ -7,7 +7,7 @@ describe("Shared Library Architecture", () => {
     jest.setTimeout(60000);
 
     it("components folder should only contain header and footer", async () => {
-        const componentsDir = path.join(process.cwd(), 'shared', 'src', 'components');
+        const componentsDir = path.join(process.cwd(), 'src', 'components');
         const dirs = fs.readdirSync(componentsDir, { withFileTypes: true })
             .filter(dirent => dirent.isDirectory())
             .map(dirent => dirent.name);
