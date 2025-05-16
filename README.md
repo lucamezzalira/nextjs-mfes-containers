@@ -22,3 +22,11 @@ Each zone is an independent Next.js application that:
 - components folder should only contain header and footer
 - shared components should not depend on zones
 - zones should be free of cycles
+
+## Test Status
+
+| Zone | Architecture Tests | Size Check |
+|------|-------------------|------------|
+| home | ✅ | ✅ |
+| catalog | ✅ | ✅ |
+| account | ✅ | ✅ |
