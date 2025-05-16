@@ -6,5 +6,5 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testTimeout: 60000, // Architecture tests can take longer
+  testTimeout: 60000,
 }; 

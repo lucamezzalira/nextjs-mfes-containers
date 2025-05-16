@@ -1,0 +1,6 @@
+[
+  {
+    "path": ".next/static/chunks/main-*.js",
+    "limit": "1 s"
+  }
+] 

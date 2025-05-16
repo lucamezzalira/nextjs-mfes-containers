@@ -4,7 +4,7 @@
   "private": true,
   "workspaces": [
     "home",
-    "catalogue",
+    "catalog",
     "account"
   ],
   "scripts": {
@@ -15,12 +15,14 @@
     "clean": "docker-compose down -v",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces",
-    "test:architecture": "jest __tests__/architecture"
+    "size": "size-limit"
   },
   "devDependencies": {
+    "@size-limit/preset-app": "^11.2.0",
     "@types/jest": "^29.5.14",
     "eslint": "^9.26.0",
     "prettier": "^3.0.0",
+    "size-limit": "^11.2.0",
     "ts-jest": "^29.3.3",
     "tsarch": "^5.4.1",
     "typescript": "^5.8.3"
