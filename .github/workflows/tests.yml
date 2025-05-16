@@ -40,6 +40,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build shared package
+        run: |
+          cd shared
+          npm run build
+
       - name: Build ${{ matrix.zone }}
         run: cd ${{ matrix.zone }} && npm run build
 
