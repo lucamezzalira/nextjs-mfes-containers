@@ -34,17 +34,30 @@ jobs:
 
       - name: Run architecture tests for ${{ matrix.zone }}
         id: arch-test
+        continue-on-error: true
         run: |
           cd ${{ matrix.zone }}
           npm run test:architecture
-          echo "status=$?" >> $GITHUB_OUTPUT
+          echo "arch_status=$?" >> $GITHUB_ENV
 
       - name: Run size check for ${{ matrix.zone }}
         id: size-check
+        continue-on-error: true
         run: |
           cd ${{ matrix.zone }}
           npm run size
-          echo "status=$?" >> $GITHUB_OUTPUT
+          echo "size_status=$?" >> $GITHUB_ENV
+
+      - name: Create test result file
+        run: |
+          echo "${{ matrix.zone }}:arch:${{ steps.arch-test.outcome }}" >> test-results.txt
+          echo "${{ matrix.zone }}:size:${{ steps.size-check.outcome }}" >> test-results.txt
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ matrix.zone }}
+          path: test-results.txt
 
   update-readme:
     needs: run-tests
@@ -57,6 +70,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download all test results
+        uses: actions/download-artifact@v3
+        with:
+          path: test-results
+
       - name: Generate test status section
         run: |
           echo "## Test Status" > temp-test-status.md
@@ -65,16 +83,16 @@ jobs:
           echo "|------|-------------------|------------|" >> temp-test-status.md
           
           for zone in home catalog account; do
-            arch_status=$(echo '${{ needs.run-tests.outputs.arch-test-'$zone' }}')
-            size_status=$(echo '${{ needs.run-tests.outputs.size-check-'$zone' }}')
+            arch_status=$(grep "$zone:arch:" test-results/test-results-$zone/test-results.txt | cut -d':' -f3)
+            size_status=$(grep "$zone:size:" test-results/test-results-$zone/test-results.txt | cut -d':' -f3)
             
             arch_emoji="✅"
-            if [ "$arch_status" != "0" ]; then
+            if [ "$arch_status" != "success" ]; then
               arch_emoji="❌"
             fi
             
             size_emoji="✅"
-            if [ "$size_status" != "0" ]; then
+            if [ "$size_status" != "success" ]; then
               size_emoji="❌"
             fi
             
