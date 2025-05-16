@@ -1,0 +1,99 @@
+name: Run Tests and Update Status
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        zone: [home, catalog, account]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build ${{ matrix.zone }}
+        run: cd ${{ matrix.zone }} && npm run build
+
+      - name: Run architecture tests for ${{ matrix.zone }}
+        id: arch-test
+        run: |
+          cd ${{ matrix.zone }}
+          npm run test:architecture
+          echo "status=$?" >> $GITHUB_OUTPUT
+
+      - name: Run size check for ${{ matrix.zone }}
+        id: size-check
+        run: |
+          cd ${{ matrix.zone }}
+          npm run size
+          echo "status=$?" >> $GITHUB_OUTPUT
+
+  update-readme:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate test status section
+        run: |
+          echo "## Test Status" > temp-test-status.md
+          echo "" >> temp-test-status.md
+          echo "| Zone | Architecture Tests | Size Check |" >> temp-test-status.md
+          echo "|------|-------------------|------------|" >> temp-test-status.md
+          
+          for zone in home catalog account; do
+            arch_status=$(echo '${{ needs.run-tests.outputs.arch-test-'$zone' }}')
+            size_status=$(echo '${{ needs.run-tests.outputs.size-check-'$zone' }}')
+            
+            arch_emoji="✅"
+            if [ "$arch_status" != "0" ]; then
+              arch_emoji="❌"
+            fi
+            
+            size_emoji="✅"
+            if [ "$size_status" != "0" ]; then
+              size_emoji="❌"
+            fi
+            
+            echo "| $zone | $arch_emoji | $size_emoji |" >> temp-test-status.md
+          done
+
+      - name: Update README.md with test status
+        run: |
+          awk '
+          BEGIN { p=1 }
+          /^## Test Status/ { p=0; system("cat temp-test-status.md"); next }
+          p { print }
+          ' README.md > README.md.new
+          mv README.md.new README.md
+          rm temp-test-status.md
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update test status" && git push) 
