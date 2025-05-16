@@ -30,3 +30,4 @@ Each zone is an independent Next.js application that:
 | home | ✅ | ✅ |
 | catalog | ✅ | ✅ |
 | account | ✅ | ✅ |
+| shared | ✅ | ✅ |
