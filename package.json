@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@size-limit/preset-app": "^11.2.0",
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "eslint": "^9.26.0",
     "prettier": "^3.0.0",
     "size-limit": "^11.2.0",
