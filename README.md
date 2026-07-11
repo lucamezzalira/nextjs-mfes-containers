@@ -41,11 +41,30 @@ pnpm dev
 | Mode | How | URL |
 |------|-----|-----|
 | Stitched (recommended) | `pnpm dev` | `http://localhost:3024` |
-| Standalone home | `pnpm --filter home dev` | `http://localhost:3000` |
-| Standalone catalog | `pnpm --filter catalog dev` | `http://localhost:3001/catalog` |
-| Standalone account | `pnpm --filter account dev` | `http://localhost:3002/account` |
+| Standalone home | see below | `http://localhost:3000` |
+| Standalone catalog | see below | `http://localhost:3001/catalog` |
+| Standalone account | see below | `http://localhost:3002/account` |
 
-You do **not** need home running to work on catalog or account alone. Use the proxy when you want path-based composition that matches production routing on Vercel.
+### Direct zone ports vs the proxy
+
+While the local proxy is running, `@vercel/microfrontends` redirects requests that hit a zone’s own port (`:3000`, `:3001`, `:3002`) to `http://localhost:3024`. That is intentional: the proxy origin is the local stand-in for the single production domain.
+
+So if you open `http://localhost:3001/catalog` during `pnpm dev`, you will usually land on `http://localhost:3024/catalog` instead.
+
+To open a zone on its own port without that redirect:
+
+```bash
+# one zone only
+MFE_DISABLE_LOCAL_PROXY_REWRITE=1 pnpm --filter catalog dev
+# then visit http://localhost:3001/catalog
+
+# or disable rewrites for every app under turbo
+MFE_DISABLE_LOCAL_PROXY_REWRITE=1 pnpm dev
+```
+
+You do **not** need home running to work on catalog or account alone. Prefer the proxy (`:3024`) when you want path-based composition and cross-zone header/footer links. Prefer `MFE_DISABLE_LOCAL_PROXY_REWRITE=1` when you want to inspect one zone in isolation on its port.
+
+Docs: [Vercel microfrontends local development](https://vercel.com/docs/microfrontends/local-development).
 
 ### How routing works
 
