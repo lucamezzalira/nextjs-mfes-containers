@@ -15,9 +15,12 @@
     "clean": "docker-compose down -v",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "size": "size-limit"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@size-limit/preset-app": "^11.2.0",
     "@types/jest": "^29.5.14",
     "eslint": "^9.26.0",
