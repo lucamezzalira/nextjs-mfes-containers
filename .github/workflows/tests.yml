@@ -85,6 +85,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # pull_request checkouts are detached by default; check out the PR branch
+          # so the README status commit can be pushed back.
+          ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -128,4 +131,9 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add README.md
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update test status" && git push)
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No README changes"
+            exit 0
+          fi
+          git commit -m "Update test status"
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
