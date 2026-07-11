@@ -105,7 +105,7 @@ Compose serves each zone on its own port. For path-based stitching locally, pref
 
 | Zone | Architecture Tests | Size Check |
 |------|-------------------|------------|
-| home | ✅ | ✅ |
-| catalog | ✅ | ✅ |
-| account | ✅ | ✅ |
-| shared | ✅ | ✅ |
+| home | ✅ | ❌ |
+| catalog | ✅ | ❌ |
+| account | ✅ | ❌ |
+| shared | ❌ | ✅ |
