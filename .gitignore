@@ -54,4 +54,8 @@ next-env.d.ts
 .docker/
 docker-compose.override.yml
 
-dist/ 
+dist/
+
+# turborepo
+.turbo/
+**/.turbo/ 

@@ -4,7 +4,6 @@ const nextConfig = {
   output: 'standalone',
   assetPrefix: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_CATALOG_ASSET_PREFIX : '',
   images: {
-    domains: ['images.unsplash.com'],
     remotePatterns: [
       {
         protocol: 'https',

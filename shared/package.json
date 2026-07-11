@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "next": "^15",
+    "next": "^16",
     "react": "^19",
     "react-dom": "^19"
   },

@@ -25,21 +25,21 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'npm run dev --workspace=home',
+      command: 'pnpm --filter home dev',
       url: 'http://localhost:3000',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       env: zoneEnv,
     },
     {
-      command: 'npm run dev --workspace=catalog',
+      command: 'pnpm --filter catalog dev',
       url: 'http://localhost:3001/catalog',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       env: zoneEnv,
     },
     {
-      command: 'npm run dev --workspace=account',
+      command: 'pnpm --filter account dev',
       url: 'http://localhost:3002/account',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
