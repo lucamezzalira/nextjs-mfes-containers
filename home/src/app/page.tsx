@@ -28,11 +28,11 @@ const featuredProducts = [
 
 export default function Home() {
   const handleCatalogClick = () => {
-    window.location.href = 'http://localhost:3001/catalog';
+    window.location.href = '/catalog';
   };
 
   const handleProductClick = (productId: string) => {
-    window.location.href = `http://localhost:3001/catalog/product/${productId}`;
+    window.location.href = `/catalog/product/${productId}`;
   };
 
   return (
