@@ -25,22 +25,16 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'pnpm --filter home dev',
+      command: 'pnpm --filter home --filter catalog --filter account --parallel dev',
       url: 'http://localhost:3000',
       reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
+      timeout: 180_000,
       env: zoneEnv,
     },
     {
-      command: 'pnpm --filter catalog dev',
-      url: 'http://localhost:3001/catalog',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
-      env: zoneEnv,
-    },
-    {
-      command: 'pnpm --filter account dev',
-      url: 'http://localhost:3002/account',
+      command:
+        'pnpm --filter home exec microfrontends proxy ./microfrontends.json --local-apps home catalog account',
+      url: 'http://localhost:3024',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       env: zoneEnv,
