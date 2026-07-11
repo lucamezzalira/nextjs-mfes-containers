@@ -1,10 +1,10 @@
+const { withMicrofrontends } = require('@vercel/microfrontends/next/config');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: process.env.NEXT_PUBLIC_CATALOG_BASE_PATH,
+  basePath: process.env.NEXT_PUBLIC_CATALOG_BASE_PATH || '/catalog',
   output: 'standalone',
-  assetPrefix: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_CATALOG_ASSET_PREFIX : '',
   images: {
-    domains: ['images.unsplash.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,6 +13,6 @@ const nextConfig = {
     ],
   },
   transpilePackages: ['@t-shirt-shop/shared'],
-}
+};
 
-module.exports = nextConfig 
+module.exports = withMicrofrontends(nextConfig);

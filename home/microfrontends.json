@@ -1,0 +1,31 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "home": {
+      "development": {
+        "local": 3000,
+        "fallback": "http://localhost:3000"
+      }
+    },
+    "catalog": {
+      "development": {
+        "local": 3001
+      },
+      "routing": [
+        {
+          "paths": ["/catalog", "/catalog/:path*"]
+        }
+      ]
+    },
+    "account": {
+      "development": {
+        "local": 3002
+      },
+      "routing": [
+        {
+          "paths": ["/account", "/account/:path*"]
+        }
+      ]
+    }
+  }
+}

@@ -5,6 +5,10 @@ node_modules/
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 # next.js
 /.next/
@@ -50,4 +54,8 @@ next-env.d.ts
 .docker/
 docker-compose.override.yml
 
-dist/ 
+dist/
+
+# turborepo
+.turbo/
+**/.turbo/ 

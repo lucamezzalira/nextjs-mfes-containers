@@ -1,64 +1,16 @@
 version: 2
 updates:
-  # Enable version updates for npm
+  # pnpm workspace root (lockfile + shared deps)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 0
-    ignore:
-      - dependency-name: "next"
-        update-types: ["version-update:semver-major"]
-
-  # Enable version updates for Docker
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-
-  # Enable version updates for npm in home zone
-  - package-ecosystem: "npm"
-    directory: "/home"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-    ignore:
-      - dependency-name: "next"
-        update-types: ["version-update:semver-major"]
-
-  # Enable version updates for npm in catalog zone
-  - package-ecosystem: "npm"
-    directory: "/catalog"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-    ignore:
-      - dependency-name: "next"
-        update-types: ["version-update:semver-major"]
-
-  # Enable version updates for npm in account zone
-  - package-ecosystem: "npm"
-    directory: "/account"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-    ignore:
-      - dependency-name: "next"
-        update-types: ["version-update:semver-major"]
-
-  # Shared package
-  - package-ecosystem: "npm"
-    directory: "/shared"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
-      - "npm"
-      - "shared"
+      - "pnpm"
     commit-message:
-      prefix: "npm"
+      prefix: "pnpm"
       include: "scope"
     ignore:
       - dependency-name: "next"
@@ -75,4 +27,4 @@ updates:
       - "docker"
     commit-message:
       prefix: "docker"
-      include: "scope" 
+      include: "scope"

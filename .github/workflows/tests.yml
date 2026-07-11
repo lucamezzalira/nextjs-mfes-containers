@@ -15,15 +15,13 @@ jobs:
       matrix:
         zone: [home, catalog, account, shared]
     env:
-      # Home zone environment variables
+      NEXT_PUBLIC_HOME_URL: http://localhost:3000
       NEXT_PUBLIC_HOME_ASSET_PREFIX: /home
       NEXT_PUBLIC_CATALOG_URL: http://localhost:3001
       NEXT_PUBLIC_CATALOG_BASE_PATH: /catalog
       NEXT_PUBLIC_ACCOUNT_URL: http://localhost:3002
       NEXT_PUBLIC_ACCOUNT_BASE_PATH: /account
-      # Catalog zone environment variables
       NEXT_PUBLIC_CATALOG_ASSET_PREFIX: /catalog
-      # Account zone environment variables
       NEXT_PUBLIC_ACCOUNT_ASSET_PREFIX: /account
     steps:
       - uses: actions/checkout@v4
@@ -31,41 +29,42 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '24'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Build shared package
         if: matrix.zone != 'shared'
-        run: |
-          cd shared
-          npm run build
+        run: pnpm --filter "./shared" build
 
       - name: Build ${{ matrix.zone }}
         run: |
-          cd ${{ matrix.zone }}
-          if [ -f package.json ] && grep -q '"build"' package.json; then npm run build; fi
+          if grep -q '"build"' "${{ matrix.zone }}/package.json"; then
+            pnpm --filter "./${{ matrix.zone }}" build
+          fi
 
       - name: Run architecture tests for ${{ matrix.zone }}
         id: arch-test
         continue-on-error: true
-        run: |
-          cd ${{ matrix.zone }}
-          npm run test:architecture
-          echo "arch_status=$?" >> $GITHUB_ENV
+        run: pnpm --filter "./${{ matrix.zone }}" test:architecture
 
       - name: Run size check for ${{ matrix.zone }}
         id: size-check
         continue-on-error: true
         run: |
-          cd ${{ matrix.zone }}
-          if [ -f package.json ] && grep -q '"size"' package.json; then npm run size; else exit 0; fi
-          echo "size_status=$?" >> $GITHUB_ENV
+          if grep -q '"size"' "${{ matrix.zone }}/package.json"; then
+            pnpm --filter "./${{ matrix.zone }}" size
+          else
+            exit 0
+          fi
 
       - name: Create test result file
         run: |
@@ -86,6 +85,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # pull_request checkouts are detached by default; check out the PR branch
+          # so the README status commit can be pushed back.
+          ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -129,4 +131,9 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add README.md
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update test status" && git push) 
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No README changes"
+            exit 0
+          fi
+          git commit -m "Update test status"
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
